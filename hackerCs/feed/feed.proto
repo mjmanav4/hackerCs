@@ -1,0 +1,193 @@
+syntax =  "proto3";
+
+package feed;
+import "google/api/annotations.proto";
+
+
+message Tag{
+    string tag_key=1;
+    string tag_link=2;
+}
+
+
+message Tags{
+    string type=1;
+    TagsCardProps props=2;
+
+}
+message TagsCardProps{
+    string title=1;
+    repeated Tag tags_array=2;
+}
+
+
+
+message VideoList{
+ string type=1;
+ VideoListProps props=2;
+
+}
+message VideoListProps{
+    string title=1;
+    string alignment=2;
+    string see_all=3;
+    repeated VideoListPropsArrayObject videoArray=4;
+}
+message VideoListPropsArrayObject{
+    string video_link=1;
+    repeated Tag tags=2;
+    string shop_look=3;
+}
+
+
+message ShopList{
+    string type=1;
+    ShopListProps props=2;
+}
+message ShopListProps{
+    string title=1;
+    string alignment=2;
+    string see_all=3;
+    repeated shopListPropsArrayObject shop_array=4;
+}
+message shopListPropsArrayObject{
+    string image=1;
+    string sub_title=2;
+    int64 count=3;
+}
+
+
+message ListPage{
+    string type=1;
+    ListPageProps props =2;
+}
+message ListPageProps{
+repeated ListPagePropsArrayObject listArray =1;
+}
+message ListPagePropsArrayObject{
+    string celeb_image=1;
+    string style_image=2;
+    string sub_title=3;
+    int64 mrp=4;
+    int64 discount_price=5;
+} 
+
+
+message PdpCarousel{
+    string type =1;
+    PdpCarouselProps props=2;
+
+}
+message PdpCarouselProps{
+    string title=1;
+    repeated PdpCarouselArrayObject pdpList=2;
+}
+message PdpCarouselArrayObject{
+    string image=1;
+    string article_type=2;
+    string mrp=3;
+    string discount_price=4;
+}
+
+
+message LandingPageGrid{
+    string type=1;
+    LandingPageGridProps props=2;
+
+}
+message LandingPageGridProps{
+    string title=1;
+    repeated LandingPageGridArrayObject gridArray=2;
+
+}
+
+message LandingPageGridArrayObject{
+    string footer=1;
+    string image=2;
+    string shop_landing_page=3;
+}
+
+message FeedResponse{
+
+    VideoList video_list=1 [json_name = "VIDEO_LIST"];
+    LandingPageGrid landing_page_grid=2 [json_name = "LANDING_PAGE_GRID"];
+    PdpCarousel pdp_carousel=3 [json_name = "PDP_CAROUSEL"];
+    ShopList shop_list=4 [json_name = "SHOP_LIST"];
+    Tags tag_card=5 [json_name = "TAGS"];
+    ListPage list_page=6 [json_name = "LIST_PAGE"];
+
+}
+
+
+message Request{
+}
+
+message GetShopDataRequest{
+    string type=1;
+}
+message GetShopByVideoRequest{
+    string id=1;
+}
+
+message GetListPageDataRequest{
+    string type=1;
+    string name=2;
+}
+
+message GetShopByHashTagsRequest{
+    string tags=1;
+}
+
+// all the commented rpc are incomplete
+// resolve it all
+service FeedService{
+
+   
+// mock data
+    rpc GetLandingPageData(Request) returns (FeedResponse){
+        option (google.api.http) = {
+            get: "/v1/topnav/landing"
+        };
+    }
+
+
+
+    // done
+ rpc GetShopPageData(GetShopDataRequest) returns (FeedResponse){
+        option (google.api.http) = {
+            get: "/v1/shop/{type}"
+        };
+    }
+
+    rpc GetListPageData(GetListPageDataRequest) returns (FeedResponse){
+        option (google.api.http) = {
+            get: "/v1/listPage/{type}/{name}"
+        };
+    }
+
+
+
+    rpc GetAllVideos(Request) returns(FeedResponse){
+     
+        option (google.api.http) = {
+            get: "/v1/popularVideos"
+        };
+    }
+    rpc GetShopByVideo(GetShopByVideoRequest) returns(FeedResponse){
+     
+        option (google.api.http) = {
+            get: "/v1/shopVideos/{id}",
+        
+        };
+    }
+
+    rpc GetShopByHashTags(GetShopByHashTagsRequest) returns(FeedResponse){
+     
+        option (google.api.http) = {
+            get: "/v1/shopTags/{tags}",
+        
+        };
+    }
+}
+
+
